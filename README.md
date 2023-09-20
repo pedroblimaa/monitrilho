@@ -1,6 +1,6 @@
 # Monitrilho - Monitor Control Python App
 
-Monitrilho is a Python application that allows you to control your computer monitor programmatically. With Monitrilho, you can easily change display settings such as brightness, resolution, and more through a simple command-line interface.
+Monitrilho is a Python application that allows you to control your computer monitor programmatically. With Monitrilho, you can easily change display brightness through a simple user interface.
 
 ## Features
 
