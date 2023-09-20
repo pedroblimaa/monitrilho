@@ -5,7 +5,6 @@ Monitrilho is a Python application that allows you to control your computer moni
 ## Features
 
 - Adjust monitor brightness.
-- Change screen resolution.
 - More features coming soon!
 
 ## Getting Started
