@@ -1,0 +1,2 @@
+PyQt5==5.15.9
+screen_brightness_control==0.21.0

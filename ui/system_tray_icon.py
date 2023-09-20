@@ -10,7 +10,6 @@ class SystemTrayIcon(QSystemTrayIcon):
 
         icon_path = 'assets\\bright-ico.ico'
         super().__init__(QIcon(icon_path), self.main_window)
-        self.main_window = self.main_window
 
         self.setToolTip("Your App Name")
         self.activated.connect(self.tray_icon_activated)
