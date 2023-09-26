@@ -26,14 +26,14 @@ class MainWindow(QWidget):
             label.move(10, i*60 + 10)
 
             slider = QSlider(self, orientation=Qt.Horizontal)
-            
+
             self.set_position(slider, i)
             self.configure_brightness_controll(slider, monitor=i)
 
             sliders.append(slider)
 
         return sliders
-    
+
     def set_position(self, slider, i):
         slider.setRange(0, 100)
 

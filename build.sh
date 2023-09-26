@@ -1,0 +1,1 @@
+pyinstaller --add-data "assets;assets" --noconsole --icon=assets/bright-ico.ico --name=Monitrilho monitrilho.py
