@@ -31,7 +31,7 @@ class MainWindow(QWidget):
             slider.setStyle(ProxyStyle())
 
             self.set_slider_position(slider, i)
-            self.configure_brightness_controll(slider, monitor=i)
+            self.configure_brightness_control(slider, monitor=i)
 
             sliders.append(slider)
 
@@ -45,25 +45,25 @@ class MainWindow(QWidget):
         slider.setMaximumSize(300, 40)
         slider.setMinimumSize(200, 30)
 
-    def configure_brightness_controll(self, slider: QSlider, monitor):
+    def configure_brightness_control(self, slider: QSlider, monitor):
         initial_brightness = self.brightness_controller.get_current_brightness(monitor)
         slider.setValue(initial_brightness[0])
         self.sliderValues.append(initial_brightness[0])
 
-        slider.valueChanged.connect(lambda value, monitor=monitor: self.update_brightness_value_change(value, monitor))
-        slider.sliderReleased.connect(lambda monitor=monitor: self.release_update(monitor))
-        slider.sliderPressed.connect(lambda: self.update_pressed(True))
+        slider.valueChanged.connect(lambda value, monitor=monitor: self.update_brightness_when_value_changes(value, monitor))
+        slider.sliderReleased.connect(lambda monitor=monitor: self.update_brightness_when_released(monitor))
+        slider.sliderPressed.connect(lambda: self.update_pressed_flag(True))
 
-    def update_brightness_value_change(self, value, monitor):
+    def update_brightness_when_value_changes(self, value, monitor):
         self.sliderValues[monitor] = value
         if (not self.is_pressed):
             self.brightness_controller.set_brightness(self.sliderValues[monitor], monitor)
 
-    def release_update(self, monitor):
-        self.update_pressed(False)
+    def update_brightness_when_released(self, monitor):
+        self.update_pressed_flag(False)
         self.brightness_controller.set_brightness(self.sliderValues[monitor], monitor)
 
-    def update_pressed(self, is_pressed):
+    def update_pressed_flag(self, is_pressed):
         self.is_pressed = is_pressed
 
     def create_stylesheet(self):
