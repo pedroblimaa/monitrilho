@@ -1,15 +1,22 @@
 import sys
 import os
-import signal
 from PyQt5.QtWidgets import QApplication
-
+from ui.instance_manager import InstanceManager
 from ui.system_tray_icon import SystemTrayIcon
 
+
 if __name__ == '__main__':
-    app = QApplication([])
-    app.setQuitOnLastWindowClosed(False)  
+    try:
+        app = QApplication([])
+        instanceManager = InstanceManager()
 
-    system_tray_icon = SystemTrayIcon()
-    system_tray_icon.show()
+        app.setQuitOnLastWindowClosed(False)
 
-    sys.exit(app.exec_())
+        system_tray_icon = SystemTrayIcon()
+        system_tray_icon.show()
+
+        sys.exit(app.exec_())
+    except Exception as e:
+        instanceManager.show_alert("Error starting application.")
+        instanceManager.remove_lock_file()
+        raise e

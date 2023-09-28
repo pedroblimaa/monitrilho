@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QSlider, QWidget
+from PyQt5.QtWidgets import QLabel, QSlider, QWidget, QProxyStyle
 from PyQt5.QtCore import Qt
 
 from controllers.brightness_control import BrightnessController
@@ -7,6 +7,8 @@ from controllers.brightness_control import BrightnessController
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
+
+        self.is_pressed = False
 
         self.brightness_controller = BrightnessController()
         self.sliderValues = []
@@ -26,15 +28,16 @@ class MainWindow(QWidget):
             label.move(10, i*60 + 10)
 
             slider = QSlider(self, orientation=Qt.Horizontal)
+            slider.setStyle(ProxyStyle())
 
-            self.set_position(slider, i)
+            self.set_slider_position(slider, i)
             self.configure_brightness_controll(slider, monitor=i)
 
             sliders.append(slider)
 
         return sliders
 
-    def set_position(self, slider, i):
+    def set_slider_position(self, slider, i):
         slider.setRange(0, 100)
 
         slider.move(10, i*60 + 30)
@@ -47,11 +50,21 @@ class MainWindow(QWidget):
         slider.setValue(initial_brightness[0])
         self.sliderValues.append(initial_brightness[0])
 
-        slider.valueChanged.connect(lambda value, monitor=monitor: self.sliderValues.__setitem__(monitor, value))
-        slider.sliderReleased.connect(lambda monitor=monitor: self.brightness_controller.set_brightness(self.sliderValues[monitor], monitor))
+        slider.valueChanged.connect(lambda value, monitor=monitor: self.update_brightness_value_change(value, monitor))
+        slider.sliderReleased.connect(lambda monitor=monitor: self.release_update(monitor))
+        slider.sliderPressed.connect(lambda: self.update_pressed(True))
 
-    def update_brightness(self, monitor):
+    def update_brightness_value_change(self, value, monitor):
+        self.sliderValues[monitor] = value
+        if (not self.is_pressed):
+            self.brightness_controller.set_brightness(self.sliderValues[monitor], monitor)
+
+    def release_update(self, monitor):
+        self.update_pressed(False)
         self.brightness_controller.set_brightness(self.sliderValues[monitor], monitor)
+
+    def update_pressed(self, is_pressed):
+        self.is_pressed = is_pressed
 
     def create_stylesheet(self):
         return """
@@ -65,3 +78,13 @@ class MainWindow(QWidget):
                     color: #ddd;
                 }
                 """
+
+
+class ProxyStyle(QProxyStyle):
+    def styleHint(self, hint, opt=None, widget=None, return_data=None):
+        res = super().styleHint(hint, opt, widget, returnData=return_data)
+
+        if hint == self.SH_Slider_AbsoluteSetButtons:
+            res |= Qt.LeftButton
+
+        return res
