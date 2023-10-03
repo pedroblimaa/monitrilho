@@ -1,14 +1,15 @@
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, QApplication
 from PyQt5.QtGui import QIcon
 from ui.main_window import MainWindow
-
+import darkdetect
 
 class SystemTrayIcon(QSystemTrayIcon):
     def __init__(self):
 
         self.main_window = MainWindow()
-
-        icon_path = 'assets\\bright-ico.ico'
+        
+        icon_path = 'assets\\light-ico.svg' if darkdetect.isDark() else 'assets\\dark-ico.svg'
+   
         super().__init__(QIcon(icon_path), self.main_window)
 
         self.setToolTip("Your App Name")
