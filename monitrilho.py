@@ -1,5 +1,4 @@
 import sys
-import os
 from PyQt5.QtWidgets import QApplication
 from ui.instance_manager import InstanceManager
 from ui.system_tray_icon import SystemTrayIcon

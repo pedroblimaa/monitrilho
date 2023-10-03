@@ -12,3 +12,4 @@ class BrightnessController:
 
     def list_available_monitors(self):
         return list_monitors()
+    

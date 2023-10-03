@@ -1,6 +1,5 @@
 import os
 import sys
-import atexit
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QLockFile  # import QLockFile class
 

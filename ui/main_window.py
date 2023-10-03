@@ -11,7 +11,7 @@ class MainWindow(QWidget):
         self.is_pressed = False
 
         self.brightness_controller = BrightnessController()
-        self.sliderValues = []
+        self.slider_values = []
         self.create_sliders(len(self.brightness_controller.monitors))
 
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Popup)
@@ -48,20 +48,24 @@ class MainWindow(QWidget):
     def configure_brightness_control(self, slider: QSlider, monitor):
         initial_brightness = self.brightness_controller.get_current_brightness(monitor)
         slider.setValue(initial_brightness[0])
-        self.sliderValues.append(initial_brightness[0])
+        self.slider_values.append(initial_brightness[0])
 
-        slider.valueChanged.connect(lambda value, monitor=monitor: self.update_brightness_when_value_changes(value, monitor))
-        slider.sliderReleased.connect(lambda monitor=monitor: self.update_brightness_when_released(monitor))
+        slider.valueChanged.connect(
+            lambda value, monitor=monitor: self.update_brightness_when_value_changes(value, monitor)
+        )
+        slider.sliderReleased.connect(
+            lambda monitor=monitor: self.update_brightness_when_released(monitor)
+        )
         slider.sliderPressed.connect(lambda: self.update_pressed_flag(True))
 
     def update_brightness_when_value_changes(self, value, monitor):
-        self.sliderValues[monitor] = value
-        if (not self.is_pressed):
-            self.brightness_controller.set_brightness(self.sliderValues[monitor], monitor)
+        self.slider_values[monitor] = value
+        if not self.is_pressed:
+            self.brightness_controller.set_brightness(self.slider_values[monitor], monitor)
 
     def update_brightness_when_released(self, monitor):
         self.update_pressed_flag(False)
-        self.brightness_controller.set_brightness(self.sliderValues[monitor], monitor)
+        self.brightness_controller.set_brightness(self.slider_values[monitor], monitor)
 
     def update_pressed_flag(self, is_pressed):
         self.is_pressed = is_pressed
@@ -81,8 +85,8 @@ class MainWindow(QWidget):
 
 
 class ProxyStyle(QProxyStyle):
-    def styleHint(self, hint, opt=None, widget=None, return_data=None):
-        res = super().styleHint(hint, opt, widget, returnData=return_data)
+    def style_hint(self, hint, opt=None, widget=None, return_data=None):
+        res = super().style_hint(hint, opt, widget, returnData=return_data)
 
         if hint == self.SH_Slider_AbsoluteSetButtons:
             res |= Qt.LeftButton

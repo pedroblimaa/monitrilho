@@ -1,15 +1,17 @@
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, QApplication
 from PyQt5.QtGui import QIcon
-from ui.main_window import MainWindow
 import darkdetect
+
+from ui.main_window import MainWindow
+
 
 class SystemTrayIcon(QSystemTrayIcon):
     def __init__(self):
 
         self.main_window = MainWindow()
-        
+
         icon_path = 'assets\\light-ico.svg' if darkdetect.isDark() else 'assets\\dark-ico.svg'
-   
+
         super().__init__(QIcon(icon_path), self.main_window)
 
         self.setToolTip("Your App Name")
@@ -45,7 +47,12 @@ class SystemTrayIcon(QSystemTrayIcon):
         main_window_x = tray_geometry.bottomLeft().x() - main_window_size.width() - 10
         main_window_y = tray_geometry.bottom() - main_window_size.height() - 10
 
-        self.main_window.setGeometry(main_window_x, main_window_y, main_window_size.width(), main_window_size.height())
+        self.main_window.setGeometry(
+            main_window_x,
+            main_window_y,
+            main_window_size.width(),
+            main_window_size.height()
+        )
 
     def exit_app(self):
         QApplication.instance().quit()
