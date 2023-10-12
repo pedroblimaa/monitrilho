@@ -41,6 +41,13 @@ class InstanceManager():
             print("Received request from client")
             toggle_main_window()
             client_socket.close()
+            
+    def set_threading_for_listen_for_signal(self, toggle_main_window):
+        listener_thread = threading.Thread(
+            target=self.listen_for_signal,
+            args=(toggle_main_window,)
+        )
+        listener_thread.start()
 
     def send_signal_to_running_instance(self):
         with open(PORT_PATH, 'r') as f:
