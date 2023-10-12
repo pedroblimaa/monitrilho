@@ -37,12 +37,17 @@ class SystemTrayIcon(QSystemTrayIcon):
         if self.main_window.isVisible():
             self.main_window.close()
         else:
-            self.main_window.show()
-            self.main_window.raise_()
+            self.show_main_window()
+            
+    def show_main_window(self):
+        self.main_window.show()
+        self.main_window.raise_()
 
-            self.set_window_geometry()
+        self.set_window_geometry()
 
     def set_window_geometry(self):
+        # TODO - define a standard way if the system tray is not showing
+        
         tray_geometry = self.geometry()
         main_window_size = self.main_window.size()
         main_window_x = tray_geometry.bottomLeft().x() - main_window_size.width() - 10

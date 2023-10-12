@@ -1,9 +1,9 @@
 import os
 import socket
+import threading
 
 from PyQt5.QtCore import QLockFile
 from PyQt5.QtWidgets import QMessageBox
-
 
 LOCK_FILE_DIR = os.path.join(os.getcwd(), 'temp')
 LOCK_FILE_PATH = os.path.join(LOCK_FILE_DIR, 'app.lock')
@@ -12,24 +12,19 @@ SERVER_HOST = '127.0.0.1'
 
 
 class InstanceManager():
-    socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
     def __init__(self):
         super().__init__()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((SERVER_HOST, 0))
-        
         self.create_directory()
         self.check_single_instance()
-        
-        
+
     def create_directory(self):
         if not os.path.exists(LOCK_FILE_DIR):
             os.makedirs(LOCK_FILE_DIR)
 
     def check_single_instance(self):
         self.lock_file = QLockFile(LOCK_FILE_PATH)
-
         port = self.socket.getsockname()[1]
 
         if self.lock_file.tryLock():
@@ -40,28 +35,22 @@ class InstanceManager():
             exit(1)
 
     def listen_for_signal(self, toggle_main_window):
-
-        #=================================================
-        #             Blocking the application
-        #================================================
         self.socket.listen(5)
-
-        client_socket, _ = self.socket.accept()
-        print("Received request from client")
-        toggle_main_window()
-        client_socket.close()
+        while True:
+            client_socket, _ = self.socket.accept()
+            print("Received request from client")
+            toggle_main_window()
+            client_socket.close()
 
     def send_signal_to_running_instance(self):
-
         with open(PORT_PATH, 'r') as f:
             server_port = int(f.read())
 
-        self.socket.connect((SERVER_HOST, server_port))
-
-        data = self.socket.recv(1024)
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((SERVER_HOST, server_port))
+        data = client_socket.recv(1024)
         print(f"Received from server: {data.decode()}")
-
-        self.socket.close()
+        client_socket.close()
 
     def show_alert(self, message):
         msg_box = QMessageBox()
