@@ -10,7 +10,9 @@ if __name__ == '__main__':
 
     app.setQuitOnLastWindowClosed(False)
 
-    system_tray_icon = SystemTrayIcon()
+    system_tray_icon = SystemTrayIcon(instance_manager=instanceManager)
     system_tray_icon.show()
-
+    
+    instanceManager.listen_for_signal(system_tray_icon.toggle_main_window)
+    
     sys.exit(app.exec_())

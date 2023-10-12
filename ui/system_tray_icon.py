@@ -6,7 +6,8 @@ from ui.main_window import MainWindow
 
 
 class SystemTrayIcon(QSystemTrayIcon):
-    def __init__(self):
+    
+    def __init__(self, instance_manager):
 
         self.main_window = MainWindow()
 
